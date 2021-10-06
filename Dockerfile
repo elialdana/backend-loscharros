@@ -1,6 +1,8 @@
-FROM node:14
-WORKDIR /the/workdir/path
+FROM node
+WORKDIR /app
 COPY package*.json ./
 RUN npm install
 COPY . .
-CMD ['node','server.js']
+
+EXPOSE 3000
+CMD ["npm" "start"]
