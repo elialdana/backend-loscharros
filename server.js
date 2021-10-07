@@ -10,7 +10,7 @@ app.use(bodyParser.urlencoded({ extended: true }));
 // parse requests of content-type - application/json
 app.use(bodyParser.json());
 
-app.use(cors({origin:['http://tlc-cdn-comun.s3-website-us-east-1.amazonaws.com']}));
+app.use(cors());
 
 // simple route
 app.get("/", (req, res) => {
