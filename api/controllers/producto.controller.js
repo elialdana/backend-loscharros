@@ -2,26 +2,13 @@ const Producto = require("../models/producto.model");
 
 
 exports.create = (req, res) => {
-  console.log("reques",req.body)
+  
   if (!req.body) {
     res.status(400).send({
       message: "Content can not be empty!"
     });
   }
-  if(!req.headers.authorization) return res.status(401).json('No autorizado');
-  const jwt = require('jsonwebtoken');
-  const token = req.headers.authorization.substr(7);
   
-  if(token==''){
-    res.status(401).json('Token vacio');
-   
-  }
-
-  const content = jwt.verify(token, 'umg')
-  
-  if(!content){
-    res.status(401).json('Token invalido');
-  }
 
   const producto = new Producto({
     codigo: req.body.codigo,
@@ -46,20 +33,7 @@ exports.create = (req, res) => {
 
 
 exports.findAll = (req, res) => {
-  if(!req.headers.authorization) return res.status(401).json('No autorizado');
-  const jwt = require('jsonwebtoken');
-  const token = req.headers.authorization.substr(7);
-  
-  if(token==''){
-    res.status(401).json('Token vacio');
-   
-  }
 
-  const content = jwt.verify(token, 'umg')
-  
-  if(!content){
-    res.status(401).json('Token invalido');
-  }
   Producto.getAll((err, data) => {
     if (err)
       res.status(500).send({
@@ -72,20 +46,7 @@ exports.findAll = (req, res) => {
 
 
 exports.findOne = (req, res) => {
-  if(!req.headers.authorization) return res.status(401).json('No autorizado');
-  const jwt = require('jsonwebtoken');
-  const token = req.headers.authorization.substr(7);
   
-  if(token==''){
-    res.status(401).json('Token vacio');
-   
-  }
-
-  const content = jwt.verify(token, 'umg')
-  
-  if(!content){
-    res.status(401).json('Token invalido');
-  }
   Producto.findById(req.params.id, (err, data) => {
     if (err) {
       if (err.kind === "not_found") {
@@ -104,35 +65,19 @@ exports.findOne = (req, res) => {
 
 exports.update = (req, res) => {
 
-  if (!req.body) {
-    res.status(400).send({
-      message: "Content can not be empty!"
-    });
-  }
-  if(!req.headers.authorization) return res.status(401).json('No autorizado');
-  const jwt = require('jsonwebtoken');
-  const token = req.headers.authorization.substr(7);
-  
-  if(token==''){
-    res.status(401).json('Token vacio');
-   
-  }
-
-  const content = jwt.verify(token, 'umg')
-  
-  if(!content){
-    res.status(401).json('Token invalido');
-  }
-  console.log(req.body);
 
   const producto = new Producto({
+    id: req.body.id,
+    codigo: req.body.codigo,
     nombre: req.body.nombre,
     descripcion: req.body.descripcion,
-    estado: req.body.estado
+    estado: req.body.estado,
+    calcular_precio: req.body.estado,
+    precio_predeterminado: req.body.precio_predeterminado
   });
 
   Producto.updateById(
-    req.params.id,
+    producto.id,
     producto,
     (err, data) => {
       if (err) {
@@ -152,21 +97,8 @@ exports.update = (req, res) => {
 
 
 exports.delete = (req, res) => {
-  if(!req.headers.authorization) return res.status(401).json('No autorizado');
-  const jwt = require('jsonwebtoken');
-  const token = req.headers.authorization.substr(7);
-  
-  if(token==''){
-    res.status(401).json('Token vacio');
-   
-  }
 
-  const content = jwt.verify(token, 'umg')
-  
-  if(!content){
-    res.status(401).json('Token invalido');
-  }
-  Producto.remove(req.params.id, (err, data) => {
+  Producto.remove(req.body.id, (err, data) => {
     if (err) {
       if (err.kind === "not_found") {
         res.status(404).send({

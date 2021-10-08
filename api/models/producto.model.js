@@ -1,22 +1,22 @@
 const sql = require("./db.js");
 
 // constructor
-const Producto = function(producto) {
-  this.id = producto.id;
-  this.codigo = producto.codigo;  
-  this.nombre = producto.nombre;
-  this.descripcion = producto.descripcion;
-  this.estado = producto.estado;
-  this.calcular_precio = producto.calcular_precio;
-  this.precio_predeterminado = producto.precio_predeterminado;
+const productos = function(productos) {
+  this.id = productos.id;
+  this.codigo = productos.codigo;  
+  this.nombre = productos.nombre;
+  this.descripcion = productos.descripcion;
+  this.estado = productos.estado;
+  this.calcular_precio = productos.calcular_precio;
+  this.precio_predeterminado = productos.precio_predeterminado;
 
 };
 
-Producto.create = (newProducto, result) => {
+productos.create = (newproductos, result) => {
 
 
-  console.log('Producto que llega ',newProducto);
-  sql.query("INSERT INTO productos SET ?", newProducto, (err, res) => {
+  
+  sql.query("INSERT INTO productos SET ?", newproductos, (err, res) => {
    
     if (err) {
       console.log("error: ", err);
@@ -24,36 +24,36 @@ Producto.create = (newProducto, result) => {
       return;
     }
 
-    console.log("created producto: ", { id: res.insertId, ...newProducto });
-    result(null, { id: res.insertId, ...newProducto });
+    
+    result(null, { id: res.insertId, ...newproductos });
   });
 };
 
-Producto.findById = (productoId, result) => {
-  sql.query(`SELECT * FROM PRODUCTOS WHERE id = ${productoId}`, (err, res) => {
+productos.findById = (productosId, result) => {
+  sql.query(`SELECT * FROM productos WHERE id = ${productosId}`, (err, res) => {
     if (err) {
-      console.log("error: ", err);
+      
       result(err, null);
       return;
     }
 
     if (res.length) {
-      console.log("found producto: ", res[0]);
+      
       result(null, res[0]);
       return;
     }
 
-    // not found Producto with the id
+    // not found productos with the id
     result({ kind: "not_found" }, null);
   });
 };
 
-Producto.getAll = result => {
+productos.getAll = result => {
   
   
-  console.log(" ingresando a getall");
+  
    
-  sql.query("SELECT * FROM PRODUCTOS where estado='A'",
+  sql.query("SELECT * FROM productos where estado='A'",
    (err, res) => {
     if (err) {
       console.log("error: ", err);
@@ -61,37 +61,37 @@ Producto.getAll = result => {
       return;
     }
 
-    console.log("productos: ", res);
+    
     result(null, res);
     return;
   });
 };
 
-Producto.updateById = (id, producto, result) => {
+productos.updateById = (id, productos, result) => {
   sql.query(
-    "UPDATE PRODUCTOS SET NOMBRE = ?, DESCRIPCION = ?, ESTADO = ? WHERE id = ?",
-    [producto.nombre, producto.descripcion,producto.estado,id],
+    "UPDATE productos SET nombre = ?, descripcion = ?, estado = ?,stock=?,codigo=?,proveedor_id WHERE id = ?",
+    [productos.nombre, productos.descripcion,productos.estado,productos.stock,productos.codigo,productos.proveedor_id,id],
     (err, res) => {
       if (err) {
-        console.log("error: ", err);
+        
         result(null, err);
         return;
       }
 
       if (res.affectedRows == 0) {
-        // not found Producto with the id
+        // not found productos with the id
         result({ kind: "not_found" }, null);
         return;
       }
 
-      console.log("updated producto: ", { id: id, ...producto });
-      result(null, { id: id, ...producto });
+      
+      result(null, { id: id, ...productos });
     }
   );
 };
 
-Producto.remove = (id, result) => {
-  sql.query("UPDATE PRODUCTOS SET ESTADO='I' WHERE id = ?", id, (err, res) => {
+productos.remove = (id, result) => {
+  sql.query("UPDATE productos SET ESTADO='I' WHERE id = ?", id, (err, res) => {
     if (err) {
       console.log("error: ", err);
       result(null, err);
@@ -99,15 +99,15 @@ Producto.remove = (id, result) => {
     }
 
     if (res.affectedRows == 0) {
-      // not found Producto with the id
+      // not found productos with the id
       result({ kind: "not_found" }, null);
       return;
     }
 
-    console.log("deleted TLC_PRODUCTOS with id: ", id);
+    
     result(null, res);
   });
 };
 
 
-module.exports = Producto;
+module.exports = productos;

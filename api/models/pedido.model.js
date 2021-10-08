@@ -26,8 +26,8 @@ Pedido.create = (newPedido, result) => {
       return;
     }
 
-    console.log("created pedido: ", { id: res.insertId, ...newPedido });
-    result(null, { id: res.insertId, ...newPedido });
+    console.log("created pedido: ", { res });
+    result(null, res );
   });
 };
 
@@ -68,11 +68,10 @@ Pedido.getAll = result => {
 };
 
 Pedido.updateById = (id, pedido, result) => {
-console.log('MODIFICANDO PEDIDO MODEL ',pedido.id)
-console.log('MODIFICANDO PEDIDO MODEL ',pedido)
+
   sql.query(
-    "UPDATE pedidos SET usuario_asignado = ?, estado = ?,  FECHA_ENTREGA=?,FECHA_MODIFICACION,USUARIO_MODIFICA WHERE id = ?",
-    [pedido.usuario_asignado, pedido.estado,pedido.fecha_entrega,new Date(),pedido.usuario_modifica, pedido.id],
+    "UPDATE pedidos SET usuario_asignado = ?, estado = ?,  FECHA_ENTREGA=?,FECHA_MODIFICACION=? WHERE id = "+id,
+    [pedido.usuario_asignado, pedido.estado,pedido.fecha_entrega,new Date()],
     (err, res) => {
       if (err) {
         console.log("error: ", err);
